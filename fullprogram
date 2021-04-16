@@ -1,0 +1,61 @@
+import math
+import matplotlib.pyplot as plt
+
+def fvalor(t,q,z):
+    A = 0.3
+    Cin = 52
+    C1 = q
+    return A*Cin - A*C1
+
+def gvalor(t,q,z):
+    B = 7
+    C = 0.5
+    C1 = q
+    C2 = z
+    return B + C*C1 - C*C2
+
+def valanalitica(ponto):
+    A = 0.3
+    B = 7
+    C = 0.5
+    C01 = 21 
+    Cin = 52
+    x = ponto 
+    resultado = Cin*(1 - pow(math.e, (-A*x))) + C01*pow(math.e,(-A*x))
+    return resultado
+
+def Plotagem():
+    i=0
+    h=float(input('Digite o h:'))
+    tempotot=int(input('Digite o intervalo:'))
+    t1=[0]
+    q=[4]
+    z=[21]
+    analitica=[0]
+    while i<tempotot/h:
+        k11=fvalor(t1[i],q[i],z[i])
+        k12=gvalor(t1[i],q[i],z[i])
+        k21=fvalor(t1[i]+h/3,q[i]+(h*k11)/3,z[i] + h*k12/3)
+        k22=gvalor(t1[i]+h/3,q[i]+(h*k11)/3,z[i] + h*k12/3)
+        k31=fvalor(t1[i]+h/3,q[i]+h*k21/3,z[i]+h*k22/3)
+        k32=gvalor(t1[i]+h/3,q[i]+h*k21/3,z[i]+h*k22/3)
+        k41=fvalor(t1[i]+h,q[i]+h*k31,z[i]+h*k32)
+        k42=gvalor(t1[i]+h,q[i]+h*k31,z[i]+h*k32)
+        t1.append(t1[i]+h)
+
+        analitica.append(valanalitica(t1[i]))
+        q.append(q[i]+(h/8)*(k11+(3*k21)+(3*k31)+k41))
+        z.append(z[i]+(h/8)*(k12+(3*k22)+(3*k32)+k42))
+    
+        i=i+1
+        
+    plt.plot(t1,analitica)
+    plt.plot(t1,q)
+    plt.title('Passo de 1s aproximando Runge-Kutta 3/8 e valores da analitica')
+    plt.xlabel('Valor de x')
+    plt.ylabel('Valor no eixo y')
+    plt.show()
+    #azul analitica
+    #laranja discreta, através do metodo
+if __name__ == "__main__":
+ Plotagem()
